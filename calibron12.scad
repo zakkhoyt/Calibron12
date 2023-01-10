@@ -29,35 +29,64 @@ box_wall_t = 2;
 // customizer. Used for private variables. 
 
 ps_square = [
-    [[7,5], [30, 20, 90], "Crimson"],
-    [[3,10], [10, 27, 90], "DeepPink"],
-    [[12,10], [30, 8, 90], "Orange"],
-    [[15,10], [0, 0, 90], "Maroon"],
-    [[15,10], [0, 15, 90], "Sienna"],
-    [[13,15], [20, 27, 90], "Chartreuse"],
-    [[15,13], [17, 8, 90], "Honeydew"],
-    [[4,20], [10, 23, 90], "SlateGray"],
-    [[20,5], [35, 20, 90], "Turquoise"],
-    [[10,20], [0, 30, 90], "Plum"],
-    [[23,7], [10, 0, 90], "Indigo"],
-    [[8,23], [17, 0, 90], "Gold"]
+    [[5, 7], [30, 20, 0], "Crimson"],
+    [[10, 3], [10, 27, 0], "DeepPink"],
+    [[10, 12], [30, 8, 0], "Orange"],
+    [[10, 15], [0, 0, 0], "Maroon"],
+    [[10, 15], [0, 15, 0], "Sienna"],
+    [[15, 13], [20, 27, 0], "Chartreuse"],
+    [[13, 15], [17, 8, 0], "Honeydew"],
+    [[20, 4], [10, 23, 0], "SlateGray"],
+    [[5, 20], [35, 20, 0], "Turquoise"],
+    [[20, 10], [0, 30, 0], "Plum"],
+    [[7, 23], [10, 0, 0], "Indigo"],
+    [[23, 8], [17, 0, 0], "Gold"]
 ];
 
 ps_key0 = [
-    [[5,7], [10,24,90], "Crimson"],
-    [[10,3], [20,15,90], "DeepPink"],
-    [[10,12], [0,24,90], "Orange"],
-    [[10,15], [20,15,90], "Maroon"],
-    [[15,10], [0,14,90], "Sienna"],
-    [[15,13], [15,18,90], "Chartreuse"],
-    [[15,13], [30,23,90], "Honeydew"],
-    [[20,4], [0,0,90], "SlateGray"],
-    [[20,5], [10,31,90], "Turquoise"],
-    [[20,10], [0,4,90], "Plum"],
-    [[7,23], [38,0,90], "Indigo"],
-    [[8,23], [30,0,90], "Gold"],
+    [[5, 7], [10, 24, 0], "Crimson"],
+    [[10, 3], [20, 15, 0], "DeepPink"],
+    [[10, 12], [0, 24, 0], "Orange"],
+    [[10, 15], [20, 0, 0], "Maroon"],
+    [[15, 10], [0, 14, 0], "Sienna"],
+    [[15, 13], [15, 18, 0], "Chartreuse"],
+    [[15, 13], [30, 23, 0], "Honeydew"],
+    [[20, 4], [0, 0, 0], "SlateGray"],
+    [[20, 5], [10, 31, 0], "Turquoise"],
+    [[20, 10], [0, 4, 0], "Plum"],
+    [[7, 23], [38, 0, 0], "Indigo"],
+    [[8, 23], [30, 0, 0], "Gold"],
 ];
 
+ps_key1 = [
+    [[5, 7], [15, 13, 0], "Crimson"],
+    [[10, 3], [20, 13, 0], "DeepPink"],
+    [[10, 12], [10, 20, 0], "Orange"],
+    [[10, 15], [0, 0, 0], "Maroon"],
+    [[10, 15], [0, 15, 0], "Sienna"],
+    [[15, 13], [15, 0, 0], "Chartreuse"],
+    [[15, 13], [30, 23, 0], "Honeydew"],
+    [[20, 4], [0, 32, 0], "SlateGray"],
+    [[5, 20], [10, 0, 0], "Turquoise"],
+    [[10, 20], [20, 16, 0], "Plum"],
+    [[7, 23], [38, 0, 0], "Indigo"],
+    [[8, 23], [30, 0, 0], "Gold"],
+];
+
+ps_key2 = [
+    [[5, 7], [5, 12, 0], "Crimson"],
+    [[10, 3], [10, 16, 0], "DeepPink"],
+    [[10, 12], [0, 0, 0], "Orange"],
+    [[10, 15], [10, 0, 0], "Maroon"],
+    [[10, 15], [20, 0, 0], "Sienna"],
+    [[15, 13], [5, 19, 0], "Chartreuse"],
+    [[15, 13], [30, 23, 0], "Honeydew"],
+    [[20, 4], [0, 32, 0], "SlateGray"],
+    [[5, 20], [0, 12, 0], "Turquoise"],
+    [[10, 20], [20, 16, 0], "Plum"],
+    [[7, 23], [38, 0, 0], "Indigo"],
+    [[8, 23], [30, 0, 0], "Gold"],
+];
 
 key_box_size = [45, 36, 2];
 square_box_size = [40, 40, 2];
@@ -76,8 +105,8 @@ module render_pieces(ps) {
                 position = p[1];
                 rotate(position.z) {
                     translate([
-                        piece_scale * (position.y + rect.x / 2), 
-                        piece_scale * (-position.x + -rect.y / 2), 
+                        piece_scale * (position.x + rect.x / 2), 
+                        piece_scale * (position.y + rect.y / 2), 
                         0
                     ]) {               
                         cube(
@@ -152,6 +181,10 @@ module main() {
         render_pieces(ps=ps_square);
     } else if (piece_layout == "key0") {
         render_pieces(ps=ps_key0);
+    } else if (piece_layout == "key1") {
+        render_pieces(ps=ps_key1);
+    } else if (piece_layout == "key2") {
+        render_pieces(ps=ps_key2);
     }
     // render_pieces(layout=piece_layout);
     // render_box(dimensions=square_box_size);

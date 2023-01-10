@@ -4,7 +4,7 @@
         "New set 1": {
             "box_wall_t": "2",
             "piece_height": "5",
-            "piece_layout": "key0",
+            "piece_layout": "square",
             "piece_scale": "1",
             "render_quality": "fast preview"
         }
