@@ -9,7 +9,10 @@ render_quality = "fast preview"; // ["fast preview", "preview", "final rendering
 // ----------------------------------------------------------------------
 
 // How to layout the pieces
+// piece_layout = "square"; // ["linear", "square", "key0", "key1", "key2", "key0_exploded", "key1_exploded", "key2_exploded"]
 piece_layout = "square"; // ["linear", "square", "key0", "key1", "key2"]
+
+exploded = true;
 
 /* [Piece Parameters] */
 // ----------------------------------------------------------------------
@@ -43,6 +46,21 @@ ps_square = [
     [[23, 8], [17, 0, 0], "Gold"]
 ];
 
+ps_square_exploded = [
+    [[5, 7], [33, 23, 0], "Crimson"],
+    [[10, 3], [11, 30, 0], "DeepPink"],
+    [[10, 12], [33, 9, 0], "Orange"],
+    [[10, 15], [0, 0, 0], "Maroon"],
+    [[10, 15], [0, 16, 0], "Sienna"],
+    [[15, 13], [22, 31, 0], "Chartreuse"],
+    [[13, 15], [19, 9, 0], "Honeydew"],
+    [[20, 4], [11, 25, 0], "SlateGray"],
+    [[5, 20], [39, 22, 0], "Turquoise"],
+    [[20, 10], [0, 34, 0], "Plum"],
+    [[7, 23], [11, 0, 0], "Indigo"],
+    [[23, 8], [19, 0, 0], "Gold"]
+];
+
 ps_key0 = [
     [[5, 7], [10, 24, 0], "Crimson"],
     [[10, 3], [20, 15, 0], "DeepPink"],
@@ -55,7 +73,22 @@ ps_key0 = [
     [[20, 5], [10, 31, 0], "Turquoise"],
     [[20, 10], [0, 4, 0], "Plum"],
     [[7, 23], [38, 0, 0], "Indigo"],
-    [[8, 23], [30, 0, 0], "Gold"],
+    [[8, 23], [30, 0, 0], "Gold"]
+];
+
+ps_key0_exploded = [
+    [[5, 7], [11, 27, 0], "Crimson"],
+    [[10, 3], [22, 16, 0], "DeepPink"],
+    [[10, 12], [0, 27, 0], "Orange"],
+    [[10, 15], [21, 0, 0], "Maroon"],
+    [[15, 10], [0, 16, 0], "Sienna"],
+    [[15, 13], [17, 21, 0], "Chartreuse"],
+    [[15, 13], [33, 25, 0], "Honeydew"],
+    [[20, 4], [0, 0, 0], "SlateGray"],
+    [[20, 5], [11, 35, 0], "Turquoise"],
+    [[20, 10], [0, 5, 0], "Plum"],
+    [[7, 23], [42, 1, 0], "Indigo"],
+    [[8, 23], [33, 1, 0], "Gold"]
 ];
 
 ps_key1 = [
@@ -70,7 +103,22 @@ ps_key1 = [
     [[5, 20], [10, 0, 0], "Turquoise"],
     [[10, 20], [20, 16, 0], "Plum"],
     [[7, 23], [38, 0, 0], "Indigo"],
-    [[8, 23], [30, 0, 0], "Gold"],
+    [[8, 23], [30, 0, 0], "Gold"]
+];
+
+ps_key1_exploded = [
+    [[5, 7], [17, 14, 0], "Crimson"],
+    [[10, 3], [23, 14, 0], "DeepPink"],
+    [[10, 12], [11, 22, 0], "Orange"],
+    [[10, 15], [0, 0, 0], "Maroon"],
+    [[10, 15], [0, 16, 0], "Sienna"],
+    [[15, 13], [17, 0, 0], "Chartreuse"],
+    [[15, 13], [34, 24, 0], "Honeydew"],
+    [[20, 4], [0, 35, 0], "SlateGray"],
+    [[5, 20], [11, 0, 0], "Turquoise"],
+    [[10, 20], [23, 18, 0], "Plum"],
+    [[7, 23], [43, 0, 0], "Indigo"],
+    [[8, 23], [34, 0, 0], "Gold"]
 ];
 
 ps_key2 = [
@@ -85,7 +133,22 @@ ps_key2 = [
     [[5, 20], [0, 12, 0], "Turquoise"],
     [[10, 20], [20, 16, 0], "Plum"],
     [[7, 23], [38, 0, 0], "Indigo"],
-    [[8, 23], [30, 0, 0], "Gold"],
+    [[8, 23], [30, 0, 0], "Gold"]
+];
+
+ps_key2_exploded = [
+    [[5, 7], [6, 13, 0], "Crimson"],
+    [[10, 3], [12, 18, 0], "DeepPink"],
+    [[10, 12], [0, 0, 0], "Orange"],
+    [[10, 15], [12, 0, 0], "Maroon"],
+    [[10, 15], [23, 0, 0], "Sienna"],
+    [[15, 13], [6, 22, 0], "Chartreuse"],
+    [[15, 13], [34, 24, 0], "Honeydew"],
+    [[20, 4], [0, 36, 0], "SlateGray"],
+    [[5, 20], [0, 13, 0], "Turquoise"],
+    [[10, 20], [23, 18, 0], "Plum"],
+    [[7, 23], [43, 0, 0], "Indigo"],
+    [[8, 23], [34, 0, 0], "Gold"]
 ];
 
 key_box_size = [45, 36, 2];
@@ -178,14 +241,26 @@ module render_box(dimensions) {
 
 module main() {
     if (piece_layout == "square") {
-        render_pieces(ps=ps_square);
+        render_pieces(
+            ps = exploded == true ? ps_square_exploded : ps_square
+        );
     } else if (piece_layout == "key0") {
-        render_pieces(ps=ps_key0);
+        render_pieces(
+            ps = exploded == true ? ps_key0_exploded : ps_key0
+        );
     } else if (piece_layout == "key1") {
-        render_pieces(ps=ps_key1);
+        render_pieces(
+            ps = exploded == true ? ps_key1_exploded : ps_key1
+        );
     } else if (piece_layout == "key2") {
-        render_pieces(ps=ps_key2);
+        render_pieces(
+            ps = exploded == true ? ps_key2_exploded : ps_key2
+        );
     }
+
+
+
+    
     // render_pieces(layout=piece_layout);
     // render_box(dimensions=square_box_size);
 }
