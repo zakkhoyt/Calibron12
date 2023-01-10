@@ -5,14 +5,19 @@
 // Render quality (fast preview does not render threads).
 render_quality = "fast preview"; // ["fast preview", "preview", "final rendering"]
 
-/* [Pieces] */
+
+/* [Parts] */
+models = "pieces"; // ["pieces", "box"]
+
+
+/* [Piece Layout] */
 // ----------------------------------------------------------------------
 
 // How to layout the pieces
-// piece_layout = "square"; // ["linear", "square", "key0", "key1", "key2", "key0_exploded", "key1_exploded", "key2_exploded"]
 piece_layout = "square"; // ["linear", "square", "key0", "key1", "key2"]
 
-exploded = true;
+// Render pieces in exploded layout (printable). 
+pieces_exploded = true;
 
 /* [Piece Parameters] */
 // ----------------------------------------------------------------------
@@ -23,6 +28,12 @@ piece_height = 5;
 // how big to scale the pieces by. [mm]
 piece_scale = 3;
 
+// Render the dimensions on the piece.
+piece_labels = false;
+
+/* [Box Parameters] */
+// ----------------------------------------------------------------------
+
 // How thick to make the walls for the box. [mm]
 box_wall_t = 2;
 
@@ -30,6 +41,38 @@ box_wall_t = 2;
 // ----------------------------------------------------------------------
 // (This is a special section that OpenSCAD will not show in the 
 // customizer. Used for private variables. 
+
+
+ps_linear = [
+    [[7, 5], [0, 0, 0], "Crimson"],
+    [[3, 10], [7, 0, 0], "DeepPink"],
+    [[12, 10], [10, 0, 0], "Orange"],
+    [[15, 10], [22, 0, 0], "Maroon"],
+    [[15, 10], [37, 0, 0], "Sienna"],
+    [[13, 15], [52, 0, 0], "Chartreuse"],
+    [[15, 13], [65, 0, 0], "Honeydew"],
+    [[4, 20], [80, 0, 0], "SlateGray"],
+    [[20, 5], [84, 0, 0], "Turquoise"],
+    [[10, 20], [104, 0, 0], "Plum"],
+    [[23, 7], [114, 0, 0], "Indigo"],
+    [[8, 23], [137, 0, 0], "Gold"],
+];
+
+ps_linear_exploded = [
+    [[7, 5], [0, 0, 0], "Crimson"],
+    [[3, 10], [8, 0, 0], "DeepPink"],
+    [[12, 10], [13, 0, 0], "Orange"],
+    [[15, 10], [28, 0, 0], "Maroon"],
+    [[15, 10], [47, 0, 0], "Sienna"],
+    [[13, 15], [67, 0, 0], "Chartreuse"],
+    [[15, 13], [86, 0, 0], "Honeydew"],
+    [[4, 20], [108, 0, 0], "SlateGray"],
+    [[20, 5], [120, 0, 0], "Turquoise"],
+    [[10, 20], [149, 0, 0], "Plum"],
+    [[23, 7], [169, 0, 0], "Indigo"],
+    [[8, 23], [203, 0, 0], "Gold"],
+];
+
 
 ps_square = [
     [[5, 7], [30, 20, 0], "Crimson"],
@@ -61,6 +104,8 @@ ps_square_exploded = [
     [[23, 8], [19, 0, 0], "Gold"]
 ];
 
+
+// TODO: Add key peice
 ps_key0 = [
     [[5, 7], [10, 24, 0], "Crimson"],
     [[10, 3], [20, 15, 0], "DeepPink"],
@@ -76,6 +121,7 @@ ps_key0 = [
     [[8, 23], [30, 0, 0], "Gold"]
 ];
 
+// TODO: Add key peice
 ps_key0_exploded = [
     [[5, 7], [11, 27, 0], "Crimson"],
     [[10, 3], [22, 16, 0], "DeepPink"],
@@ -91,6 +137,7 @@ ps_key0_exploded = [
     [[8, 23], [33, 1, 0], "Gold"]
 ];
 
+// TODO: Add key peice
 ps_key1 = [
     [[5, 7], [15, 13, 0], "Crimson"],
     [[10, 3], [20, 13, 0], "DeepPink"],
@@ -106,6 +153,7 @@ ps_key1 = [
     [[8, 23], [30, 0, 0], "Gold"]
 ];
 
+// TODO: Add key peice
 ps_key1_exploded = [
     [[5, 7], [17, 14, 0], "Crimson"],
     [[10, 3], [23, 14, 0], "DeepPink"],
@@ -121,6 +169,7 @@ ps_key1_exploded = [
     [[8, 23], [34, 0, 0], "Gold"]
 ];
 
+// TODO: Add key peice
 ps_key2 = [
     [[5, 7], [5, 12, 0], "Crimson"],
     [[10, 3], [10, 16, 0], "DeepPink"],
@@ -136,6 +185,7 @@ ps_key2 = [
     [[8, 23], [30, 0, 0], "Gold"]
 ];
 
+// TODO: Add key peice
 ps_key2_exploded = [
     [[5, 7], [6, 13, 0], "Crimson"],
     [[10, 3], [12, 18, 0], "DeepPink"],
@@ -240,21 +290,25 @@ module render_box(dimensions) {
 }
 
 module main() {
-    if (piece_layout == "square") {
+    if (piece_layout == "linear") {
         render_pieces(
-            ps = exploded == true ? ps_square_exploded : ps_square
+            ps = pieces_exploded == true ? ps_linear_exploded : ps_linear
+        );
+    } else if (piece_layout == "square") {
+        render_pieces(
+            ps = pieces_exploded == true ? ps_square_exploded : ps_square
         );
     } else if (piece_layout == "key0") {
         render_pieces(
-            ps = exploded == true ? ps_key0_exploded : ps_key0
+            ps = pieces_exploded == true ? ps_key0_exploded : ps_key0
         );
     } else if (piece_layout == "key1") {
         render_pieces(
-            ps = exploded == true ? ps_key1_exploded : ps_key1
+            ps = pieces_exploded == true ? ps_key1_exploded : ps_key1
         );
     } else if (piece_layout == "key2") {
         render_pieces(
-            ps = exploded == true ? ps_key2_exploded : ps_key2
+            ps = pieces_exploded == true ? ps_key2_exploded : ps_key2
         );
     }
 
