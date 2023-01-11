@@ -28,8 +28,21 @@ piece_height = 3;
 // how big to scale the pieces by. [mm]
 piece_scale = 3;
 
-// Render the dimensions on the piece.
+// piece_label_type = "Name 1"; // ["Name 1", "Name 2", "Dimensions"]
+
+// Render the names on the piece.
 piece_labels = false;
+
+// TODO: make this work
+// Render the names on the key pieces.
+key_piece_labels = false;
+
+// Render the dimensions on the piece.
+piece_dimensions = true;
+
+// List fonts on your system:
+// fc-list -f "%-60{{%{family[0]}%{:style[0]=}}}%{file}\n" | sort
+piece_font = "SF Mono:style=Bold";
 
 /* [Box Parameters] */
 // ----------------------------------------------------------------------
@@ -147,23 +160,24 @@ ps_key2 = [
     [[20, 1], [10, 15, 0], [0, 49, 0]]
 ];
 
-piece_colors = [
-    "Crimson",
-    "DeepPink",
-    "Orange",
-    "Maroon",
-    "Sienna",
-    "Chartreuse",
-    "Honeydew",
-    "SlateGray",
-    "Turquoise",
-    "Plum",
-    "Indigo",
-    "Gold",
-    "Silver", // "Black",
-    "Silver", // "Black",
-    "Silver"// "Black",
+piece_properties = [
+    ["Crimson", "7 x 5", "P 0"],
+    ["DeepPink", "3 x 10", "P 1"],
+    ["Orange", "12 x 10", "P 2"],
+    ["Maroon", "15 x 10", "P 3"],
+    ["Sienna", "15 x 10", "P 4"],
+    ["Chartreuse", "13 x 15", "P 5"],
+    ["Honeydew", "15 x 13", "P 6"],
+    ["SlateGray", "4 x 20", "P 7"],
+    ["Turquoise", "20 x 5", "P 8"],
+    ["Plum", "10 x 20", "P 9"],
+    ["Indigo", "23 x 7", "P 10"],
+    ["Gold", "8 x 23", "P 11"],
+    ["Silver", "5 x 4", "K 0"],
+    ["Silver", "10 x 2", "K 1"],
+    ["Silver", "20 x 1", "K 2"],
 ];
+
 
 // Dimensions for key box (rect). Holds up to 3 layers of pieces. 
 box_3keys_size = [45, 36, 3];
@@ -178,12 +192,13 @@ module render_pieces(ps, exploded) {
     // translate([0, 0, piece_height / 2]) {
         // Render in the square solution
         for (i = [0: len(ps) - 1]) {
-        // for (i = [len(ps) - 1: len(ps) - 1]) {
+            echo(" ------- i: ", i);
+        // for (i = [len(ps) - 3: len(ps) - 1]) {
         // for (i = [0: 0]) {
             p = ps[i];
             rect = p[0];
             // color = p[2];
-            color = piece_colors[i];
+            color = piece_properties[i][0];
             color(color) {
                 position = exploded == true ? p[2] : p[1];
                 rotate(position.z) {
@@ -193,6 +208,7 @@ module render_pieces(ps, exploded) {
                         0
                     ]) {      
                         difference() {
+                            // The piece itself
                             cube(
                                 size=[
                                     piece_scale * rect.x, 
@@ -201,23 +217,71 @@ module render_pieces(ps, exploded) {
                                 ], 
                                 center=true
                             );
-                            
-                            if (i >= len(ps) - 3 ) {
-                                // TODO: Increse label depth
-                                // TODO: Expose label depth as param
-                                // TODO: Expose font as param
-                                translate([0, 0, (piece_height) / 2]) 
-                                #scale(0.1 * piece_scale)
-                                rotate([0, 0, 0])
-                                // linear_extrude(height = 0.5) 
-                                text("Key 0", halign="center", valign="center");
-                                
-                                // translate([0, 0, -(piece_height) / 2]) 
-                                // scale(0.1 * piece_scale)
-                                // rotate([0, 180, 0])
-                                // #text("Key 0", halign="center", valign="center");
-                            } else {
-                                // TODO: Print dimensions on pieces
+
+                            union() {
+                                // Positional data to print text on both sides of the piece. 
+                                // Data is as follows: [tranlate.z, rotate.x]
+                                ps = [
+                                    [1, 0],
+                                    [-1, 180]
+                                ];
+
+                                text_margin = 0.25;
+                                text_size = 1.0;
+
+                                echo("text_size: ", text_size);
+                                smaller_dimension = min(rect.x, rect.y);
+                                echo("smaller_dimension: ", smaller_dimension);
+                                text_size_clipped = min(text_size, smaller_dimension - 2 * text_margin);
+                                echo("text_size_clipped: ", text_size_clipped);
+
+                                if (piece_labels == true) {
+                                    for (j = [0: len(ps) - 1]) {
+                                        p = ps[j];
+                                        translate([0, 0, p[0] * (piece_height) / 2]) 
+                                        scale([piece_scale, piece_scale, piece_height / 2])
+                                        rotate([p[1], 0, 0])
+
+                                        #text(
+                                            text = piece_properties[i][2], 
+                                            font = piece_font,
+                                            halign = "center", 
+                                            valign = "center", 
+                                            size = text_size_clipped
+                                        );
+                                    }
+                                } 
+
+                                if (piece_dimensions == true) {
+                                    for (j = [0: len(ps) - 1]) {
+                                        // Loop through each of the 4 sides. 
+                                        for (k = [0: 3]) {
+                                            if ((3 * text_size >= rect.y || 3 * text_size >= rect.x) && k >= 2) {
+                                                // This avoids printing two dimension numbers on top of each other when they overlap.
+                                                // Instead settle for 2 labels instead of 4
+                                            } else {
+                                                // Rotate and position the dimension label along the edge of the piece. 
+                                                p = ps[j];
+                                                rotate([0, 0, k * (360 / 4)])
+                                                translate([
+                                                    0, 
+                                                    piece_scale * ((k % 2 == 0 ? rect.y : rect.x) / 2 - text_size_clipped), 
+                                                    p[0] * (piece_height) / 2
+                                                ]) 
+                                                scale([piece_scale, piece_scale, piece_height / 2])
+                                                rotate([p[1], 0, 180])
+
+                                                #text(
+                                                    text = str(k % 2 == 0 ? rect.x : rect.y), 
+                                                    font = piece_font,
+                                                    halign = "center", 
+                                                    valign = "center", 
+                                                    size = text_size_clipped
+                                                );
+                                            }
+                                        }
+                                    }
+                                } 
                             }
                         }
                     }
