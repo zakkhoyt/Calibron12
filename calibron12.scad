@@ -48,6 +48,7 @@ box_wall_t = 2;
 // The following arrays contain:
 // [size, offset_rotation_packed, offset_rotation_exploded]
 // [[width, height], [offset_x, offset_y, rotation], [offset_x, offset_y, rotation]],
+
 ps_linear = [
     [[7, 5], [0, 0, 0], [0, 0, 0]],
     [[3, 10], [7, 0, 0], [8, 0, 0]],
@@ -61,6 +62,10 @@ ps_linear = [
     [[10, 20], [104, 0, 0], [113, 0, 0]],
     [[23, 7], [114, 0, 0], [124, 0, 0]],
     [[8, 23], [137, 0, 0], [148, 0, 0]],
+    // Keys
+    [[5, 4], [15, 14, 0], [157, 0, 0]],
+    [[10, 2], [0, 30, 0], [163, 0, 0]],
+    [[20, 1], [10, 15, 0], [174, 0, 0]]
 ];
 
 ps_square = [
@@ -75,7 +80,11 @@ ps_square = [
     [[5, 20], [35, 20, 0], [39, 22, 0]],
     [[20, 10], [0, 30, 0], [0, 34, 0]],
     [[7, 23], [10, 0, 0], [11, 0, 0]],
-    [[23, 8], [17, 0, 0], [19, 0, 0]]
+    [[23, 8], [17, 0, 0], [19, 0, 0]],
+    // Keys
+    [[5, 4], [15, 14, 0], [0, 45, 0]],
+    [[10, 2], [0, 30, 0], [6, 45, 0]],
+    [[20, 1], [10, 15, 0], [17, 45, 0]]
 ];
 
 ps_key0 = [
@@ -91,7 +100,11 @@ ps_key0 = [
     [[20, 10], [0, 4, 0], [0, 5, 0]],
     [[7, 23], [38, 0, 0], [42, 1, 0]],
     [[8, 23], [30, 0, 0], [33, 1, 0]],
-    [[5, 4], [15, 14, 0], [16, 16, 0]]
+    // Keys
+    // [[5, 4], [15, 14, 0], [16, 16, 0]], // solution position
+    [[5, 4], [15, 14, 0], [0, 40, 0]],
+    [[10, 2], [0, 30, 0], [0, 45, 0]],
+    [[20, 1], [10, 15, 0], [0, 48, 0]],
 ];
 
 ps_key1 = [
@@ -107,7 +120,11 @@ ps_key1 = [
     [[10, 20], [20, 16, 0], [23, 18, 0]],
     [[7, 23], [38, 0, 0], [43, 0, 0]],
     [[8, 23], [30, 0, 0], [34, 0, 0]],
-    [[10, 2], [0, 30, 0], [0, 32, 0]]
+    // Keys
+    [[5, 4], [15, 14, 0], [0, 40, 0]],
+    // [[10, 2], [0, 30, 0], [0, 32, 0]], // solution position
+    [[10, 2], [0, 30, 0], [0, 45, 0]],
+    [[20, 1], [10, 15, 0], [0, 48, 0]],
 ];
 
 ps_key2 = [
@@ -123,7 +140,11 @@ ps_key2 = [
     [[10, 20], [20, 16, 0], [23, 18, 0]],
     [[7, 23], [38, 0, 0], [43, 0, 0]],
     [[8, 23], [30, 0, 0], [34, 0, 0]],
-    [[20, 1], [10, 15, 0], [12, 16, 0]]
+    // Keys
+    [[5, 4], [15, 14, 0], [0, 41, 0]],
+    [[10, 2], [0, 30, 0], [0, 46, 0]],
+    // [[20, 1], [10, 15, 0], [12, 16, 0]], // solution position
+    [[20, 1], [10, 15, 0], [0, 49, 0]]
 ];
 
 piece_colors = [
@@ -139,6 +160,8 @@ piece_colors = [
     "Plum",
     "Indigo",
     "Gold",
+    "Silver", // "Black",
+    "Silver", // "Black",
     "Silver"// "Black",
 ];
 
@@ -179,16 +202,22 @@ module render_pieces(ps, exploded) {
                                 center=true
                             );
                             
-                            if (i == len(ps) - 1 ) {
+                            if (i >= len(ps) - 3 ) {
+                                // TODO: Increse label depth
+                                // TODO: Expose label depth as param
+                                // TODO: Expose font as param
                                 translate([0, 0, (piece_height) / 2]) 
-                                scale(0.1 * piece_scale)
+                                #scale(0.1 * piece_scale)
                                 rotate([0, 0, 0])
+                                // linear_extrude(height = 0.5) 
                                 text("Key 0", halign="center", valign="center");
                                 
-                                translate([0, 0, -(piece_height) / 2]) 
-                                scale(0.1 * piece_scale)
-                                rotate([0, 180, 0])
-                                text("Key 0", halign="center", valign="center");
+                                // translate([0, 0, -(piece_height) / 2]) 
+                                // scale(0.1 * piece_scale)
+                                // rotate([0, 180, 0])
+                                // #text("Key 0", halign="center", valign="center");
+                            } else {
+                                // TODO: Print dimensions on pieces
                             }
                         }
                     }
