@@ -17,13 +17,13 @@
             "render_quality": "fast preview"
         },
         "New set 3": {
+            "box_layout": "3_keys",
             "box_wall_t": "2",
-            "models": "pieces",
             "piece_height": "5",
             "piece_labels": "false",
-            "piece_layout": "linear",
+            "piece_layout": "key0",
             "piece_scale": "3",
-            "pieces_exploded": "true",
+            "pieces_exploded": "false",
             "render_quality": "fast preview"
         }
     }
