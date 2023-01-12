@@ -13,7 +13,6 @@
             "piece_height": "5",
             "piece_layout": "key0",
             "piece_scale": "3",
-            "pieces_exploded": "true",
             "render_quality": "fast preview"
         },
         "New set 3": {
@@ -22,7 +21,6 @@
             "piece_height": "5",
             "piece_layout": "key0",
             "piece_scale": "3",
-            "pieces_exploded": "false",
             "render_quality": "fast preview"
         },
         "New set 4": {
@@ -32,7 +30,6 @@
             "piece_height": "3",
             "piece_layout": "key2",
             "piece_scale": "3",
-            "pieces_exploded": "true",
             "render_quality": "fast preview"
         },
         "New set 5": {
@@ -42,7 +39,6 @@
             "piece_height": "6",
             "piece_layout": "key0",
             "piece_scale": "3",
-            "pieces_exploded": "true",
             "render_quality": "fast preview"
         },
         "New set 6": {
@@ -52,7 +48,6 @@
             "piece_height": "3",
             "piece_layout": "square",
             "piece_scale": "1",
-            "pieces_exploded": "true",
             "render_quality": "fast preview"
         },
         "New set 7": {
@@ -63,7 +58,6 @@
             "piece_height": "9",
             "piece_layout": "linear",
             "piece_scale": "3",
-            "pieces_exploded": "true",
             "render_quality": "fast preview"
         },
         "New set 8": {
@@ -75,7 +69,6 @@
             "piece_label_type": "Edge Dimensions",
             "piece_layout": "key0",
             "piece_scale": "3",
-            "pieces_exploded": "true",
             "render_quality": "fast preview"
         },
         "New set 9": {
@@ -87,10 +80,7 @@
             "piece_label_type": "Edge Dimensions",
             "piece_layout": "key0",
             "piece_scale": "3",
-            "pieces_exploded": "true",
-            "render_quality": "fast preview",
-            "text_margin": "0.10000000000000001",
-            "text_scale": "1"
+            "render_quality": "fast preview"
         },
         "New set 10": {
             "box_layout": "square",
@@ -101,10 +91,7 @@
             "piece_label_type": "Edge Dimensions",
             "piece_layout": "key0",
             "piece_scale": "3",
-            "pieces_exploded": "true",
-            "render_quality": "fast preview",
-            "text_margin": "0.25",
-            "text_scale": "1.0999999999999999"
+            "render_quality": "fast preview"
         },
         "New set 11": {
             "box_layout": "square",
@@ -115,10 +102,33 @@
             "piece_label_type": "Edge Dimensions",
             "piece_layout": "key0",
             "piece_scale": "3",
-            "pieces_exploded": "true",
-            "render_quality": "fast preview",
-            "text_margin": "0.25",
-            "text_scale": "1"
+            "render_quality": "fast preview"
+        },
+        "New set 12": {
+            "box_layout": "square",
+            "box_wall_t": "3",
+            "mark_key_pieces": "yes",
+            "models": "pieces",
+            "piece_font": "SF Mono:style=Bold",
+            "piece_height": "6",
+            "piece_label_type": "Edge Dimensions",
+            "piece_layout": "key0",
+            "piece_scale": "2.8399999999999999",
+            "pieces_exploded": "yes",
+            "render_quality": "fast preview"
+        },
+        "New set 13": {
+            "box_layout": "3_keys",
+            "box_wall_t": "3",
+            "mark_key_pieces": "yes",
+            "models": "lid",
+            "piece_font": "SF Mono:style=Bold",
+            "piece_height": "6",
+            "piece_label_type": "None",
+            "piece_layout": "key0",
+            "piece_scale": "2.8399999999999999",
+            "pieces_exploded": "yes",
+            "render_quality": "fast preview"
         }
     }
 }

@@ -4,6 +4,9 @@
 // TODO: Differentiate the key pieces in a way that is printable
 // TODO: Add another layout that is printable and doesn't give away any solutions
 
+// TODO: Pad the box lid more
+// TOOD: Move keys to a different model choiuce
+
 /* [Render Parameters] */
 // ----------------------------------------------------------------------
 
@@ -12,7 +15,7 @@ render_quality = "fast preview"; // ["fast preview", "preview", "final rendering
 
 
 /* [Parts] */
-models = "pieces"; // ["pieces", "case", "lid"]
+models = "pieces"; // ["pieces", "keys", "case", "lid"]
 
 
 /* [Piece Layout] */
@@ -221,6 +224,7 @@ module render_pieces(ps, exploded) {
                         0
                     ]) {      
                         difference() {
+                        // union() {
                             // The piece itself
                             cube(
                                 size=[
@@ -327,14 +331,14 @@ module render_box(dimensions) {
     
     // Bottom
     bottom_inner = [
-        dimensions.x * piece_scale + slop,
-        dimensions.y * piece_scale + slop,
+        dimensions.x * piece_scale + 2 * slop,
+        dimensions.y * piece_scale + 2 * slop,
         dimensions.z * piece_height + slop
     ];
     bottom_outer = [
-        bottom_inner.x + 2 * box_wall_t + slop,
-        bottom_inner.y + 2 * box_wall_t + slop,
-        bottom_inner.z + 1 * box_wall_t + slop,
+        bottom_inner.x + 2 * box_wall_t,
+        bottom_inner.y + 2 * box_wall_t,
+        bottom_inner.z + 1 * box_wall_t,
     ];
 
     if (models == "case") {
@@ -365,14 +369,14 @@ module render_box(dimensions) {
     if (models == "lid") {
         // Top
         top_inner = [
-            bottom_outer.x + slop,
-            bottom_outer.y + slop,
+            bottom_outer.x + 2 * slop,
+            bottom_outer.y + 2 * slop,
             bottom_outer.z + slop
         ];
         top_outer = [
-            top_inner.x + 2 * box_wall_t + slop,
-            top_inner.y + 2 * box_wall_t + slop,
-            top_inner.z + 1 * box_wall_t + slop
+            top_inner.x + 2 * box_wall_t,
+            top_inner.y + 2 * box_wall_t,
+            top_inner.z + 1 * box_wall_t
         ];
         color("#669966", alpha = 0.75) {
             translate([top_outer.x, 0, top_outer.z]) 
