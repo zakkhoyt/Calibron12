@@ -32,13 +32,13 @@ mark_key_pieces = "yes"; // ["yes", "no"]
 
 
 // The total height of the vial and cap when assembled. [mm]
-piece_height = 3; 
+piece_height = 6; 
 
 // how big to scale the pieces by. [mm]
-piece_scale = 3;
+piece_scale = 2.84;
 
 // Label type for the pieces. 
-piece_label_type = "Edge Dimensions"; // ["None", "Piece/Key Names", "Width X Height", "Edge Dimensions"]
+piece_label_type = "None"; // ["None", "Piece/Key Names", "Width X Height", "Edge Dimensions"]
 
 
 // List fonts on your system:
@@ -53,7 +53,7 @@ piece_font = "SF Mono:style=Bold";
 box_layout = "square"; // ["square", "3_keys"]
 
 // How thick to make the walls for the box. [mm]
-box_wall_t = 2;
+box_wall_t = 3;
 
 /* [Hidden] */
 // ----------------------------------------------------------------------
@@ -189,10 +189,10 @@ piece_properties = [
 
 
 // Dimensions for key box (rect). Holds up to 3 layers of pieces. 
-box_3keys_size = [45, 36, 3];
+box_3keys_size = [45, 36, 2.33];
 
 // Dimensions for square box. Holds up to 3 layers of pieces. 
-box_square_size = [40, 40, 3];
+box_square_size = [40, 40, 2.33];
 
 // module render_pieces(layout="solution_square") {
 module render_pieces(ps, exploded) {
@@ -202,10 +202,10 @@ module render_pieces(ps, exploded) {
     translate([2 * box_wall_t, 2 * box_wall_t, piece_height / 2]) {
     // translate([0, 0, piece_height / 2]) {
         // Render in the square solution
-        // for (i = [0: len(ps) - 1]) {
-        for (a = [0: len(indexes) - 1]) {
-            i = indexes[a];
-            echo(" ------- i: ", i);
+        for (i = [0: len(ps) - 1]) {
+        // for (a = [0: len(indexes) - 1]) {
+            // i = indexes[a];
+            // echo(" ------- i: ", i);
         // for (i = [len(ps) - 3: len(ps) - 1]) {
         // for (i = [0: 0]) {
             p = ps[i];
@@ -255,17 +255,15 @@ module render_pieces(ps, exploded) {
                                 if (piece_label_type == "Piece/Key Names" || piece_label_type == "Width X Height") {
                                     for (j = [0: len(text_transforms) - 1]) {
                                         p = text_transforms[j];
-                                        translate([0, 0, p[0] * (piece_height) / 2]) 
-                                        scale([piece_scale, piece_scale, piece_height / 2])
+                                        translate([0, 0, p[0] * (piece_height) / 4]) 
                                         rotate([p[1], 0, 0])
-
+                                        linear_extrude(height = piece_height / 2) 
                                         text(
-                                            // text = piece_properties[i][1], 
                                             text = piece_label_type == "Piece/Key Names" ? piece_properties[i][1] : piece_properties[i][2], 
                                             font = piece_font,
                                             halign = "center", 
                                             valign = "center", 
-                                            size = text_scale_clipped
+                                            size = piece_scale * text_scale_clipped
                                         );
                                     }
                                 } else if (piece_label_type == "Edge Dimensions") {
@@ -282,18 +280,19 @@ module render_pieces(ps, exploded) {
                                                 translate([
                                                     0, 
                                                     piece_scale * ((k % 2 == 0 ? rect.y : rect.x) / 2 - text_scale_clipped), 
-                                                    p[0] * (piece_height) / 2
+                                                    p[0] * piece_height / 4
                                                 ]) 
-                                                scale([piece_scale, piece_scale, piece_height / 2])
                                                 rotate([p[1], 0, 180])
-
+                                                linear_extrude(height = piece_height / 2) 
                                                 text(
                                                     text = str(k % 2 == 0 ? rect.x : rect.y), 
                                                     font = piece_font,
                                                     halign = "center", 
                                                     valign = "center", 
-                                                    size = text_scale_clipped
+                                                    size = piece_scale * text_scale_clipped
                                                 );
+
+                                                
                                             }
                                         }
                                     }
@@ -302,13 +301,13 @@ module render_pieces(ps, exploded) {
                                 if (mark_key_pieces == "yes") {
                                     if (i > len(ps) - 4) {
                                         // key_indent_depth = box_wall_t / 2;
-                                        key_indent_depth = 0.5;
+                                        key_indent_depth = 1;
                                         translate([0, 0, (piece_height) / 2]) 
                                         cube(
                                             [
                                                 piece_scale * rect.x - 2 * key_indent_depth, 
                                                 piece_scale * rect.y - 2 * key_indent_depth, 
-                                                key_indent_depth
+                                                4 * key_indent_depth
                                             ], 
                                             center = true
                                         );
@@ -376,8 +375,8 @@ module render_box(dimensions) {
             top_inner.z + 1 * box_wall_t + slop
         ];
         color("#669966", alpha = 0.75) {
-            // translate([top_outer_x, top_outer_y, top_outer_z]) 
-            // rotate([0, 180, 0])
+            translate([top_outer.x, 0, top_outer.z]) 
+            rotate([0, 180, 0])
             translate([
                 top_outer.x / 2, 
                 top_outer.y / 2, 
