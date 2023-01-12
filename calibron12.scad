@@ -1,4 +1,9 @@
 
+
+// TODO: Extend/retract text
+// TODO: Differentiate the key pieces in a way that is printable
+// TODO: Add another layout that is printable and doesn't give away any solutions
+
 /* [Render Parameters] */
 // ----------------------------------------------------------------------
 
@@ -17,10 +22,14 @@ models = "pieces"; // ["pieces", "case", "lid"]
 piece_layout = "key0"; // ["linear", "square", "key0", "key1", "key2"]
 
 // Render pieces in exploded layout (printable). 
-pieces_exploded = true;
+pieces_exploded = "yes"; // ["yes", "no"]
 
 /* [Piece Parameters] */
 // ----------------------------------------------------------------------
+
+// Mark the key pieces with an indent on the top
+mark_key_pieces = "yes"; // ["yes", "no"]
+
 
 // The total height of the vial and cap when assembled. [mm]
 piece_height = 3; 
@@ -28,21 +37,14 @@ piece_height = 3;
 // how big to scale the pieces by. [mm]
 piece_scale = 3;
 
-// piece_label_type = "Name 1"; // ["Name 1", "Name 2", "Dimensions"]
+// Label type for the pieces. 
+piece_label_type = "Edge Dimensions"; // ["None", "Piece/Key Names", "Width X Height", "Edge Dimensions"]
 
-// Render the names on the piece.
-piece_labels = false;
-
-// TODO: make this work
-// Render the names on the key pieces.
-key_piece_labels = false;
-
-// Render the dimensions on the piece.
-piece_dimensions = true;
 
 // List fonts on your system:
-// fc-list -f "%-60{{%{family[0]}%{:style[0]=}}}%{file}\n" | sort
 piece_font = "SF Mono:style=Bold";
+// fc-list -f "%-60{{%{family[0]}%{:style[0]=}}}%{file}\n" | sort
+
 
 /* [Box Parameters] */
 // ----------------------------------------------------------------------
@@ -57,6 +59,16 @@ box_wall_t = 2;
 // ----------------------------------------------------------------------
 // (This is a special section that OpenSCAD will not show in the 
 // customizer. Used for private variables. 
+
+$fn = 30;
+
+// The scale of text on pieces.
+// text_scale = 1.0;
+text_scale = 1.0;
+
+// The margin of text on pieces as a percentage of the the height of the text. 
+text_margin = 0.25;
+
 
 // The following arrays contain:
 // [size, offset_rotation_packed, offset_rotation_exploded]
@@ -95,9 +107,9 @@ ps_square = [
     [[7, 23], [10, 0, 0], [11, 0, 0]],
     [[23, 8], [17, 0, 0], [19, 0, 0]],
     // Keys
-    [[5, 4], [15, 14, 0], [0, 45, 0]],
-    [[10, 2], [0, 30, 0], [6, 45, 0]],
-    [[20, 1], [10, 15, 0], [17, 45, 0]]
+    [[5, 4], [0, 45, 0], [0, 45, 0]],
+    [[10, 2], [6, 45, 0], [6, 45, 0]],
+    [[20, 1], [17, 45, 0], [17, 45, 0]]
 ];
 
 ps_key0 = [
@@ -114,10 +126,9 @@ ps_key0 = [
     [[7, 23], [38, 0, 0], [42, 1, 0]],
     [[8, 23], [30, 0, 0], [33, 1, 0]],
     // Keys
-    // [[5, 4], [15, 14, 0], [16, 16, 0]], // solution position
     [[5, 4], [15, 14, 0], [0, 40, 0]],
-    [[10, 2], [0, 30, 0], [0, 45, 0]],
-    [[20, 1], [10, 15, 0], [0, 48, 0]],
+    [[10, 2], [0, 45, 0], [0, 45, 0]],
+    [[20, 1], [0, 48, 0], [0, 48, 0]],
 ];
 
 ps_key1 = [
@@ -134,10 +145,9 @@ ps_key1 = [
     [[7, 23], [38, 0, 0], [43, 0, 0]],
     [[8, 23], [30, 0, 0], [34, 0, 0]],
     // Keys
-    [[5, 4], [15, 14, 0], [0, 40, 0]],
-    // [[10, 2], [0, 30, 0], [0, 32, 0]], // solution position
+    [[5, 4], [0, 40, 0], [0, 40, 0]],
     [[10, 2], [0, 30, 0], [0, 45, 0]],
-    [[20, 1], [10, 15, 0], [0, 48, 0]],
+    [[20, 1], [0, 48, 0], [0, 48, 0]],
 ];
 
 ps_key2 = [
@@ -154,28 +164,27 @@ ps_key2 = [
     [[7, 23], [38, 0, 0], [43, 0, 0]],
     [[8, 23], [30, 0, 0], [34, 0, 0]],
     // Keys
-    [[5, 4], [15, 14, 0], [0, 41, 0]],
-    [[10, 2], [0, 30, 0], [0, 46, 0]],
-    // [[20, 1], [10, 15, 0], [12, 16, 0]], // solution position
+    [[5, 4], [0, 41, 0], [0, 41, 0]],
+    [[10, 2], [0, 46, 0], [0, 46, 0]],
     [[20, 1], [10, 15, 0], [0, 49, 0]]
 ];
 
 piece_properties = [
-    ["Crimson", "7 x 5", "P 0"],
-    ["DeepPink", "3 x 10", "P 1"],
-    ["Orange", "12 x 10", "P 2"],
-    ["Maroon", "15 x 10", "P 3"],
-    ["Sienna", "15 x 10", "P 4"],
-    ["Chartreuse", "13 x 15", "P 5"],
-    ["Honeydew", "15 x 13", "P 6"],
-    ["SlateGray", "4 x 20", "P 7"],
-    ["Turquoise", "20 x 5", "P 8"],
-    ["Plum", "10 x 20", "P 9"],
-    ["Indigo", "23 x 7", "P 10"],
-    ["Gold", "8 x 23", "P 11"],
-    ["Silver", "5 x 4", "K 0"],
-    ["Silver", "10 x 2", "K 1"],
-    ["Silver", "20 x 1", "K 2"],
+    ["Crimson", "P 0", "7 x 5"],
+    ["DeepPink", "P 1", "3 x 10"],
+    ["Orange", "P 2", "12 x 10"],
+    ["Maroon", "P 3", "15 x 10"],
+    ["Sienna", "P 4", "15 x 10"],
+    ["Chartreuse", "P 5", "13 x 15"],
+    ["Honeydew", "P 6", "15 x 13"],
+    ["SlateGray", "P 7", "4 x 20"],
+    ["Turquoise", "P 8", "20 x 5"],
+    ["Plum", "P 9", "10 x 20"],
+    ["Indigo", "P 10", "23 x 7"],
+    ["Gold", "P 11", "8 x 23"],
+    ["Silver", "K 0", "5 x 4"],
+    ["Silver", "K 1", "10 x 2"],
+    ["Silver", "K 2", "20 x 1"],
 ];
 
 
@@ -188,10 +197,14 @@ box_square_size = [40, 40, 3];
 // module render_pieces(layout="solution_square") {
 module render_pieces(ps, exploded) {
 
+
+    indexes = [2, 4, 12, 13];
     translate([2 * box_wall_t, 2 * box_wall_t, piece_height / 2]) {
     // translate([0, 0, piece_height / 2]) {
         // Render in the square solution
-        for (i = [0: len(ps) - 1]) {
+        // for (i = [0: len(ps) - 1]) {
+        for (a = [0: len(indexes) - 1]) {
+            i = indexes[a];
             echo(" ------- i: ", i);
         // for (i = [len(ps) - 3: len(ps) - 1]) {
         // for (i = [0: 0]) {
@@ -221,67 +234,86 @@ module render_pieces(ps, exploded) {
                             union() {
                                 // Positional data to print text on both sides of the piece. 
                                 // Data is as follows: [tranlate.z, rotate.x]
-                                ps = [
+                                text_transforms = [
                                     [1, 0],
                                     [-1, 180]
                                 ];
 
-                                text_margin = 0.25;
-                                text_size = 1.0;
+                                // text_margin = 0.25;
+                                // text_scale = 1.0;
 
-                                echo("text_size: ", text_size);
+                                echo("text_scale: ", text_scale);
                                 smaller_dimension = min(rect.x, rect.y);
                                 echo("smaller_dimension: ", smaller_dimension);
-                                text_size_clipped = min(text_size, smaller_dimension - 2 * text_margin);
-                                echo("text_size_clipped: ", text_size_clipped);
 
-                                if (piece_labels == true) {
-                                    for (j = [0: len(ps) - 1]) {
-                                        p = ps[j];
+                                // text_margin_d = text_scale * text_margin;
+                                text_margin_d = text_margin;
+                                // text_scale_clipped = min(text_scale, smaller_dimension - 4 * text_margin_d);
+                                text_scale_clipped = min(text_scale, (smaller_dimension - 1 * text_margin_d) / 2);
+                                echo("text_scale_clipped: ", text_scale_clipped);
+
+                                if (piece_label_type == "Piece/Key Names" || piece_label_type == "Width X Height") {
+                                    for (j = [0: len(text_transforms) - 1]) {
+                                        p = text_transforms[j];
                                         translate([0, 0, p[0] * (piece_height) / 2]) 
                                         scale([piece_scale, piece_scale, piece_height / 2])
                                         rotate([p[1], 0, 0])
 
-                                        #text(
-                                            text = piece_properties[i][2], 
+                                        text(
+                                            // text = piece_properties[i][1], 
+                                            text = piece_label_type == "Piece/Key Names" ? piece_properties[i][1] : piece_properties[i][2], 
                                             font = piece_font,
                                             halign = "center", 
                                             valign = "center", 
-                                            size = text_size_clipped
+                                            size = text_scale_clipped
                                         );
                                     }
-                                } 
-
-                                if (piece_dimensions == true) {
-                                    for (j = [0: len(ps) - 1]) {
+                                } else if (piece_label_type == "Edge Dimensions") {
+                                    for (j = [0: len(text_transforms) - 1]) {
                                         // Loop through each of the 4 sides. 
                                         for (k = [0: 3]) {
-                                            if ((3 * text_size >= rect.y || 3 * text_size >= rect.x) && k >= 2) {
+                                            if ((3 * text_scale >= rect.y || 3 * text_scale >= rect.x) && k < 2) {
                                                 // This avoids printing two dimension numbers on top of each other when they overlap.
                                                 // Instead settle for 2 labels instead of 4
                                             } else {
                                                 // Rotate and position the dimension label along the edge of the piece. 
-                                                p = ps[j];
+                                                p = text_transforms[j];
                                                 rotate([0, 0, k * (360 / 4)])
                                                 translate([
                                                     0, 
-                                                    piece_scale * ((k % 2 == 0 ? rect.y : rect.x) / 2 - text_size_clipped), 
+                                                    piece_scale * ((k % 2 == 0 ? rect.y : rect.x) / 2 - text_scale_clipped), 
                                                     p[0] * (piece_height) / 2
                                                 ]) 
                                                 scale([piece_scale, piece_scale, piece_height / 2])
                                                 rotate([p[1], 0, 180])
 
-                                                #text(
+                                                text(
                                                     text = str(k % 2 == 0 ? rect.x : rect.y), 
                                                     font = piece_font,
                                                     halign = "center", 
                                                     valign = "center", 
-                                                    size = text_size_clipped
+                                                    size = text_scale_clipped
                                                 );
                                             }
                                         }
                                     }
                                 } 
+
+                                if (mark_key_pieces == "yes") {
+                                    if (i > len(ps) - 4) {
+                                        // key_indent_depth = box_wall_t / 2;
+                                        key_indent_depth = 0.5;
+                                        translate([0, 0, (piece_height) / 2]) 
+                                        cube(
+                                            [
+                                                piece_scale * rect.x - 2 * key_indent_depth, 
+                                                piece_scale * rect.y - 2 * key_indent_depth, 
+                                                key_indent_depth
+                                            ], 
+                                            center = true
+                                        );
+                                    }
+                                }
                             }
                         }
                     }
@@ -375,27 +407,27 @@ module main() {
         if (piece_layout == "linear") {
             render_pieces(
                 ps = ps_linear,
-                exploded = pieces_exploded
+                exploded = pieces_exploded == "yes"
             );
         } else if (piece_layout == "square") {
             render_pieces(
                 ps = ps_square,
-                exploded = pieces_exploded
+                exploded = pieces_exploded == "yes"
             );
         } else if (piece_layout == "key0") {
             render_pieces(
                 ps = ps_key0,
-                exploded = pieces_exploded
+                exploded = pieces_exploded == "yes"
             );
         } else if (piece_layout == "key1") {
             render_pieces(
                 ps = ps_key1,
-                exploded = pieces_exploded
+                exploded = pieces_exploded == "yes"
             );
         } else if (piece_layout == "key2") {
             render_pieces(
                 ps = ps_key2,
-                exploded = pieces_exploded
+                exploded = pieces_exploded == "yes"
             );
         }
     } else if (models == "case" || models == "lid") {
