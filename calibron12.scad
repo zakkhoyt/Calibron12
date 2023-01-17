@@ -26,10 +26,8 @@ piece_layout = "Printable"; // ["Printable", "Linear", "Square", "Key 0", "Key 1
 // Render pieces in exploded layout (printable). 
 pieces_exploded = "yes"; // ["yes", "no"]
 
-
 // The total height of the vial and cap when assembled. [mm]
 piece_height = 6; 
-
 
 // Label type for the pieces. 
 piece_label_type = "None"; // ["None", "Piece/Key Names", "Width X Height", "Edge Dimensions"]
@@ -61,7 +59,7 @@ box_label = "yes"; // ["yes", "no"]
 box_label_text = "Calibron 12";
 
 // The scale of text on pieces.
-text_scale = 1.0;
+box_text_scale = 1.1;
 
 /* [Hidden] */
 // ----------------------------------------------------------------------
@@ -70,6 +68,8 @@ text_scale = 1.0;
 
 $fn = 30;
 
+// The scale of text on pieces.
+text_scale = 1.0;
 
 // The margin of text on pieces as a percentage of the the height of the text. 
 text_margin = 0.25;
@@ -261,7 +261,7 @@ module render_pieces(ps, exploded) {
                                 center=true
                             );
 
-                            union() {
+                            #union() {
                                 // Positional data to print text on both sides of the piece. 
                                 // Data is as follows: [tranlate.z, rotate.x]
                                 text_transforms = [
@@ -269,16 +269,11 @@ module render_pieces(ps, exploded) {
                                     [-1, 180]
                                 ];
 
-                                // text_margin = 0.25;
-                                // text_scale = 1.0;
-
                                 echo("text_scale: ", text_scale);
                                 smaller_dimension = min(rect.x, rect.y);
                                 echo("smaller_dimension: ", smaller_dimension);
 
-                                // text_margin_d = text_scale * text_margin;
                                 text_margin_d = text_margin;
-                                // text_scale_clipped = min(text_scale, smaller_dimension - 4 * text_margin_d);
                                 text_scale_clipped = min(text_scale, (smaller_dimension - 1 * text_margin_d) / 2);
                                 echo("text_scale_clipped: ", text_scale_clipped);
 
@@ -440,14 +435,14 @@ module render_box(dimensions) {
                         cylinder(h = 4 * box_wall_t, r = top_outer.z / 2, center=true);
                 }
 
-                if (box_label == "yes") {
+                #if (box_label == "yes") {
                     // TODO: This text scale code is repeated. Abstract to a module?
-                    echo("text_scale: ", text_scale);
+                    echo("box_text_scale: ", box_text_scale);
                     smaller_dimension = min(top_outer.x, top_outer.y);
                     echo("smaller_dimension: ", smaller_dimension);
 
                     text_margin_d = text_margin;
-                    text_scale_clipped = min(text_scale * scale, (smaller_dimension - 1 * text_margin_d) / 2);
+                    text_scale_clipped = min(box_text_scale * scale, (smaller_dimension - 1 * text_margin_d) / 2);
                     echo("text_scale_clipped: ", text_scale_clipped);
 
                     union() {
