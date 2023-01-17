@@ -1,3 +1,4 @@
+// Created by Zakk Hoyt 2023. 
 
 /* [Render Parameters] */
 // ----------------------------------------------------------------------
@@ -196,8 +197,7 @@ module render_pieces(ps, exploded) {
                         scale * (position.y + rect.y / 2), 
                         0
                     ]) {
-                        // union() {
-                        difference() {
+                        union() {
                             // The piece itself
                             cube(
                                 size = [
