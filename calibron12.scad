@@ -1,3 +1,5 @@
+// http://openscad.org/cheatsheet/
+// https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Customizer#Drop_down_box
 
 
 // TODO: Extend/retract text
@@ -33,10 +35,6 @@ piece_label_type = "None"; // ["None", "Piece/Key Names", "Width X Height", "Edg
 // The scale of text on pieces.
 piece_text_scale = 1.0; // 0.1
 
-// The font to use.
-piece_font = "ArcadeClassic:style=Regular"; 
-// piece_font = "SF Mono:style=Bold";
-// To list font names: fc-list -f "%-60{{%{family[0]}%{:style[0]=}}}%{file}\n" | sort
 
 // // Mark the key pieces with an indent on the top
 // mark_key_pieces = "yes"; // ["yes", "no"]
@@ -53,14 +51,19 @@ box_wall_t = 3; // 0.1
 // Add text to the lid or not.
 box_label = "yes"; // ["yes", "no"]
 
-/* [Text Parameters] */
-// ----------------------------------------------------------------------
-
 // The text to display on the lid
 box_label_text = "Calibron 12";
 
 // The scale of text on pieces.
 box_text_scale = 1.0; // 0.1
+
+/* [Text Parameters] */
+// ----------------------------------------------------------------------
+
+// The font to use.
+font = "ArcadeClassic:style=Regular"; 
+// font = "SF Mono:style=Bold";
+// To list font names: fc-list -f "%-60{{%{family[0]}%{:style[0]=}}}%{file}\n" | sort
 
 /* [Hidden] */
 // ----------------------------------------------------------------------
@@ -91,7 +94,7 @@ ps_printable = [
     [[20,5], [21, 25, 0], [21, 25, 0]],
     [[20,10], [0, 31, 0], [0, 31, 0]],
     [[23,7], [21, 31, 0], [21, 31, 0]],
-    [[23,8], [21, 39, 0], [0, 42, 0]],
+    [[23,8], [21, 39, 0], [21, 39, 0]],
 
     // // Keys
     // [[5, 4], [0, 44, 0], [0, 45, 0]],
@@ -196,17 +199,17 @@ ps_key2 = [
 
 piece_properties = [
     ["Crimson", "P 0", "7 x 5"],
-    ["DeepPink", "P 1", "3 x 10"],
+    ["DeepPink", "P 1", "10 x 3"],
     ["Orange", "P 2", "12 x 10"],
     ["Maroon", "P 3", "15 x 10"],
     ["Sienna", "P 4", "15 x 10"],
-    ["Chartreuse", "P 5", "13 x 15"],
+    ["Chartreuse", "P 5", "15 x 13"],
     ["Honeydew", "P 6", "15 x 13"],
-    ["SlateGray", "P 7", "4 x 20"],
+    ["SlateGray", "P 7", "20 x 4"],
     ["Turquoise", "P 8", "20 x 5"],
-    ["Plum", "P 9", "10 x 20"],
+    ["Plum", "P 9", "20 x 10"],
     ["Indigo", "P 10", "23 x 7"],
-    ["Gold", "P 11", "8 x 23"],
+    ["Gold", "P 11", "23 x 8"],
     ["Silver", "K 0", "5 x 4"],
     ["Silver", "K 1", "10 x 2"],
     ["Silver", "K 2", "20 x 1"],
@@ -227,8 +230,8 @@ box_square_size = [40, 40, 2.33];
 // module render_pieces(layout="solution_square") {
 module render_pieces(ps, exploded) {
     indexes = [2, 4, 12, 13];
-    // translate([2 * box_wall_t, 2 * box_wall_t, piece_height / 2]) {
-    translate([0, 0, piece_height / 2]) {
+    translate([2 * box_wall_t, 2 * box_wall_t, piece_height / 2]) {
+    // translate([0, 0, piece_height / 2]) {
         // Render in the square solution
         for (i = [0: len(ps) - 1]) {
         // for (a = [0: len(indexes) - 1]) {
@@ -260,7 +263,8 @@ module render_pieces(ps, exploded) {
                                 center=true
                             );
 
-                            #union() {
+                            // Text on the pieces
+                            union() {
                                 // Positional data to print text on both sides of the piece. 
                                 // Data is as follows: [tranlate.z, rotate.x]
                                 text_transforms = [
@@ -283,7 +287,7 @@ module render_pieces(ps, exploded) {
                                         linear_extrude(height = piece_height / 2) 
                                         text(
                                             text = piece_label_type == "Piece/Key Names" ? piece_properties[i][1] : piece_properties[i][2], 
-                                            font = piece_font,
+                                            font = font,
                                             halign = "center", 
                                             valign = "center", 
                                             size = scale * text_scale_clipped
@@ -309,7 +313,7 @@ module render_pieces(ps, exploded) {
                                                 linear_extrude(height = piece_height / 2) 
                                                 text(
                                                     text = str(k % 2 == 0 ? rect.x : rect.y), 
-                                                    font = piece_font,
+                                                    font = font,
                                                     halign = "center", 
                                                     valign = "center", 
                                                     size = scale * text_scale_clipped
@@ -448,7 +452,7 @@ module render_box(dimensions) {
                         linear_extrude(height = box_wall_t / 2) 
                         text(
                             text = box_label_text, 
-                            font = piece_font,
+                            font = font,
                             halign = "center", 
                             valign = "center", 
                             size = scale * text_scale_clipped

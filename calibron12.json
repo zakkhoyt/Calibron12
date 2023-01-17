@@ -13,23 +13,38 @@
             "piece_layout": "Linear",
             "pieces_exploded": "yes",
             "render_quality": "fast preview",
-            "scale": "2.8399999999999999",
-            "text_scale": "1"
+            "scale": "2.8399999999999999"
         },
         "New set 2": {
             "box_label": "yes",
             "box_label_text": "Calibron 12",
             "box_layout": "3_keys",
+            "box_text_scale": "2",
             "box_wall_t": "3",
-            "models": "Pieces",
+            "models": "Box (Top)",
             "piece_font": "ArcadeClassic:style=Regular",
             "piece_height": "6",
             "piece_label_type": "Piece\/Key Names",
             "piece_layout": "Printable",
             "pieces_exploded": "no",
             "render_quality": "fast preview",
-            "scale": "2.8399999999999999",
-            "text_scale": "1"
+            "scale": "2.8399999999999999"
+        },
+        "New set 3": {
+            "box_label": "yes",
+            "box_label_text": "Calibron 12",
+            "box_layout": "3_keys",
+            "box_text_scale": "1.1000000000000001",
+            "box_wall_t": "3",
+            "models": "Key Pieces",
+            "piece_font": "ArcadeClassic:style=Regular",
+            "piece_height": "6",
+            "piece_label_type": "Edge Dimensions",
+            "piece_layout": "Printable",
+            "piece_text_scale": "1",
+            "pieces_exploded": "yes",
+            "render_quality": "fast preview",
+            "scale": "2.8399999999999999"
         }
     }
 }
