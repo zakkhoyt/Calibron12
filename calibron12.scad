@@ -2,8 +2,6 @@
 // https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Customizer#Drop_down_box
 
 
-// TODO: Extend/retract text
-// TODO: Differentiate the key pieces in a way that is printable. 
 
 /* [Render Parameters] */
 // ----------------------------------------------------------------------
@@ -14,8 +12,8 @@ render_quality = "fast preview"; // ["fast preview", "preview", "final rendering
 /* [Parts] */
 models = "Pieces"; // ["Pieces", "Key Pieces", "Box (Bottom)", "Box (Top)"]
 
-// how big to scale the pieces by. 2.84 is the size of  of the puzzle. [mm]
-scale = 2.84; // 3.0
+// How big to scale the pieces by. 2.84 is the size of the original puzzle. [mm]
+scale = 2.84; // 0.01
 
 /* [Piece Parameters] */
 // ----------------------------------------------------------------------
@@ -35,15 +33,21 @@ piece_label_type = "None"; // ["None", "Piece/Key Names", "Width X Height", "Edg
 // The scale of text on pieces.
 piece_text_scale = 1.0; // 0.1
 
+// The inset/outset of text on pieces. [mm]
+piece_text_inset = 1; // 0.1
 
+// TODO: Address this. Name, switching, top/bottom sides
+// piece_text_indent = "yes"; // ["yes", "no"]
+
+// TODO: Differentiate the key pieces in a way that is printable. 
 // // Mark the key pieces with an indent on the top
 // mark_key_pieces = "yes"; // ["yes", "no"]
 
 /* [Box Parameters] */
 // ----------------------------------------------------------------------
 
-// The shape of the box. Square has 1 solution, 3_keys has 3 soutions. 
-box_layout = "3_keys"; // ["Square", "3_keys"]
+// The shape of the box. 'Square' has 1 solution, 'Rectangle' has 3 soutions. 
+box_layout = "Rectangle"; // ["Square", "Rectangle"]
 
 // How thick to make the walls for the box. [mm]
 box_wall_t = 3; // 0.1
@@ -55,7 +59,7 @@ box_label = "yes"; // ["yes", "no"]
 box_label_text = "Calibron 12";
 
 // The scale of text on pieces.
-box_text_scale = 1.0; // 0.1
+box_text_scale = 2.0; // 0.1
 
 /* [Text Parameters] */
 // ----------------------------------------------------------------------
@@ -72,15 +76,12 @@ font = "ArcadeClassic:style=Regular";
 
 $fn = 30;
 
-
 // The margin of text on pieces as a percentage of the the height of the text. 
 text_margin = 0.25;
-
 
 // The following arrays contain:
 // [size, offset_rotation_packed, offset_rotation_exploded]
 // [[width, height], [offset_x, offset_y, rotation], [offset_x, offset_y, rotation]],
-
 
 ps_printable = [
     [[7,5], [0, 0, 0], [0, 0, 0]],
@@ -227,6 +228,113 @@ box_3keys_size = [45, 36, 2.33];
 // Dimensions for square box. Holds up to 3 layers of pieces. 
 box_square_size = [40, 40, 2.33];
 
+
+
+/**
+Returns the text portion of a piece
+
+**Parameters**
+
+* `i`: The index into the pieces array. 
+* `rect`: The rect info for the piece containing width and height: `[x, y]`
+
+<i>  
+The index into the pieces array. 
+
+<rect>  
+2D vector to represent width / height of the piece: `[x, y]`
+
+*/
+module render_piece_text(
+    i,
+    rect
+) {
+    // Text on the pieces
+    union() {
+        // Positional data to print text on both sides of the piece. 
+        // Data is as follows: [tranlate.z, rotate.x]
+        // (top and bottom variant)
+        // text_transforms = [
+        //     [1, 0],
+        //     [-1, 180]
+        // ];
+
+    
+        // Positional data to print text on both sides of the piece. 
+        // Data is as follows: [tranlate.z, rotate.x]
+        // (top only variant)
+        text_transforms = [
+            [1, 0]
+        ];
+
+        echo("piece_text_scale: ", piece_text_scale);
+        smaller_dimension = min(rect.x, rect.y);
+        echo("smaller_dimension: ", smaller_dimension);
+
+        text_scale_clipped = min(piece_text_scale, (smaller_dimension - 1 * text_margin) / 2);
+        echo("text_scale_clipped: ", text_scale_clipped);
+
+        text_height = piece_text_inset * 2;
+        echo("text_height: ", text_height);
+
+        for (j = [0: len(text_transforms) - 1]) {
+            t = text_transforms[j];
+            if (piece_label_type == "Piece/Key Names" || piece_label_type == "Width X Height") {
+                translate([0, 0, t[0] * piece_height / 2]) 
+                rotate([t[1], 0, 0])
+                linear_extrude(height = text_height, center = true) 
+                text(
+                    text = piece_label_type == "Piece/Key Names" ? piece_properties[i][1] : piece_properties[i][2], 
+                    font = font,
+                    halign = "center", 
+                    valign = "center", 
+                    size = scale * text_scale_clipped
+                );
+            } else if (piece_label_type == "Edge Dimensions") {
+                // Loop through each of the 4 sides of each piece. 
+                for (k = [0: 3]) {
+                    if ((3 * piece_text_scale >= rect.y || 3 * piece_text_scale >= rect.x) && k < 2) {
+                        // This avoids printing two dimension numbers on top of each other when they overlap.
+                        // Instead settle for 2 labels instead of 4
+                    } else {
+                        // Rotate and position the dimension label along the edge of the piece. 
+                        rotate([0, 0, k * (360 / 4)])
+                        translate([
+                            0, 
+                            scale * ((k % 2 == 0 ? rect.y : rect.x) / 2 - text_scale_clipped), 
+                            t[0] * piece_height / 2
+                        ]) 
+                        rotate([t[1], 0, 180])
+                        linear_extrude(height = text_height, center = true) 
+                        text(
+                            text = str(k % 2 == 0 ? rect.x : rect.y), 
+                            font = font,
+                            halign = "center", 
+                            valign = "center", 
+                            size = scale * text_scale_clipped
+                        );
+                    }
+                }
+            } 
+        }
+
+        // TODO: Use this to indend before outdenting text
+        // if (mark_key_pieces == "yes") {
+        //     if (i > len(ps) - 4) {
+        //         key_indent_depth = 1;
+        //         translate([0, 0, (piece_height) / 2]) 
+        //         cube(
+        //             [
+        //                 scale * rect.x - 2 * key_indent_depth, 
+        //                 scale * rect.y - 2 * key_indent_depth, 
+        //                 4 * key_indent_depth
+        //             ], 
+        //             center = true
+        //         );
+        //     }
+        // }
+    }
+}
 // module render_pieces(layout="solution_square") {
 module render_pieces(ps, exploded) {
     indexes = [2, 4, 12, 13];
@@ -241,106 +349,30 @@ module render_pieces(ps, exploded) {
         // for (i = [0: 0]) {
             p = ps[i];
             rect = p[0];
-            // color = p[2];
-            color = piece_properties[i][0];
-            color(color) {
+            color(piece_properties[i][0]) {
                 position = exploded == true ? p[2] : p[1];
                 rotate(position.z) {
                     translate([
                         scale * (position.x + rect.x / 2), 
                         scale * (position.y + rect.y / 2), 
                         0
-                    ]) {      
-                        difference() {
+                    ]) {
                         // union() {
+                        difference() {
                             // The piece itself
                             cube(
-                                size=[
+                                size = [
                                     scale * rect.x, 
                                     scale * rect.y, 
                                     piece_height
                                 ], 
-                                center=true
+                                center = true
                             );
 
-                            // Text on the pieces
-                            union() {
-                                // Positional data to print text on both sides of the piece. 
-                                // Data is as follows: [tranlate.z, rotate.x]
-                                text_transforms = [
-                                    [1, 0],
-                                    [-1, 180]
-                                ];
-
-                                echo("piece_text_scale: ", piece_text_scale);
-                                smaller_dimension = min(rect.x, rect.y);
-                                echo("smaller_dimension: ", smaller_dimension);
-
-                                text_scale_clipped = min(piece_text_scale, (smaller_dimension - 1 * text_margin) / 2);
-                                echo("text_scale_clipped: ", text_scale_clipped);
-
-                                if (piece_label_type == "Piece/Key Names" || piece_label_type == "Width X Height") {
-                                    for (j = [0: len(text_transforms) - 1]) {
-                                        p = text_transforms[j];
-                                        translate([0, 0, p[0] * (piece_height) / 4]) 
-                                        rotate([p[1], 0, 0])
-                                        linear_extrude(height = piece_height / 2) 
-                                        text(
-                                            text = piece_label_type == "Piece/Key Names" ? piece_properties[i][1] : piece_properties[i][2], 
-                                            font = font,
-                                            halign = "center", 
-                                            valign = "center", 
-                                            size = scale * text_scale_clipped
-                                        );
-                                    }
-                                } else if (piece_label_type == "Edge Dimensions") {
-                                    for (j = [0: len(text_transforms) - 1]) {
-                                        // Loop through each of the 4 sides. 
-                                        for (k = [0: 3]) {
-                                            if ((3 * piece_text_scale >= rect.y || 3 * piece_text_scale >= rect.x) && k < 2) {
-                                                // This avoids printing two dimension numbers on top of each other when they overlap.
-                                                // Instead settle for 2 labels instead of 4
-                                            } else {
-                                                // Rotate and position the dimension label along the edge of the piece. 
-                                                p = text_transforms[j];
-                                                rotate([0, 0, k * (360 / 4)])
-                                                translate([
-                                                    0, 
-                                                    scale * ((k % 2 == 0 ? rect.y : rect.x) / 2 - text_scale_clipped), 
-                                                    p[0] * piece_height / 4
-                                                ]) 
-                                                rotate([p[1], 0, 180])
-                                                linear_extrude(height = piece_height / 2) 
-                                                text(
-                                                    text = str(k % 2 == 0 ? rect.x : rect.y), 
-                                                    font = font,
-                                                    halign = "center", 
-                                                    valign = "center", 
-                                                    size = scale * text_scale_clipped
-                                                );
-
-                                                
-                                            }
-                                        }
-                                    }
-                                } 
-
-                                // TODO: Use this to indend before outdenting text
-                                // if (mark_key_pieces == "yes") {
-                                //     if (i > len(ps) - 4) {
-                                //         key_indent_depth = 1;
-                                //         translate([0, 0, (piece_height) / 2]) 
-                                //         cube(
-                                //             [
-                                //                 scale * rect.x - 2 * key_indent_depth, 
-                                //                 scale * rect.y - 2 * key_indent_depth, 
-                                //                 4 * key_indent_depth
-                                //             ], 
-                                //             center = true
-                                //         );
-                                //     }
-                                // }
-                            }
+                            render_piece_text(
+                                i = i,
+                                rect = rect
+                            );
                         }
                     }
                 }
@@ -430,14 +462,14 @@ module render_box(dimensions) {
                 union() {
                     translate([top_outer.x / 2, 0, top_outer.z]) 
                     rotate([90, 0, 0])
-                        cylinder(h = 4 * box_wall_t, r = top_outer.z / 2, center=true);
+                        cylinder(h = 4 * box_wall_t, r = top_outer.z / 2, center = true);
 
                     translate([top_outer.x / 2, top_outer.y, top_outer.z]) 
                     rotate([90, 0, 0])
-                        cylinder(h = 4 * box_wall_t, r = top_outer.z / 2, center=true);
+                        cylinder(h = 4 * box_wall_t, r = top_outer.z / 2, center = true);
                 }
 
-                #if (box_label == "yes") {
+                if (box_label == "yes") {
                     // TODO: This text scale code is repeated. Abstract to a module?
                     echo("box_text_scale: ", box_text_scale);
                     smaller_dimension = min(top_outer.x, top_outer.y);
@@ -446,10 +478,13 @@ module render_box(dimensions) {
                     text_scale_clipped = min(box_text_scale * scale, (smaller_dimension - 1 * text_margin) / 2);
                     echo("text_scale_clipped: ", text_scale_clipped);
 
+                    text_height = min(piece_text_inset * 2, box_wall_t / 2);
+                    echo("text_height: ", text_height);
+
                     union() {
-                        translate([top_outer.x / 2, top_outer.y / 2, box_wall_t / 4]) 
+                        translate([top_outer.x / 2, top_outer.y / 2, 0]) 
                         rotate([0, 180, 180])
-                        linear_extrude(height = box_wall_t / 2) 
+                        linear_extrude(height = box_wall_t / 2, center = true) 
                         text(
                             text = box_label_text, 
                             font = font,
@@ -504,9 +539,9 @@ module main() {
         }
     } else if (models == "Box (Bottom)" || models == "Box (Top)") {
         if (box_layout == "Square") {
-            render_box(dimensions=box_square_size);
-        } else if (box_layout == "3_keys") {
-            render_box(dimensions=box_3keys_size);
+            render_box(dimensions = box_square_size);
+        } else if (box_layout == "Rectangle") {
+            render_box(dimensions = box_3keys_size);
         }
     }
 }
