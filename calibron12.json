@@ -2,133 +2,34 @@
     "fileFormatVersion": "1",
     "parameterSets": {
         "New set 1": {
-            "box_wall_t": "2",
-            "piece_height": "5",
-            "piece_layout": "square",
-            "piece_scale": "1",
-            "render_quality": "fast preview"
-        },
-        "New set 2": {
-            "box_wall_t": "2",
-            "piece_height": "5",
-            "piece_layout": "key0",
-            "piece_scale": "3",
-            "render_quality": "fast preview"
-        },
-        "New set 3": {
-            "box_layout": "3_keys",
-            "box_wall_t": "2",
-            "piece_height": "5",
-            "piece_layout": "key0",
-            "piece_scale": "3",
-            "render_quality": "fast preview"
-        },
-        "New set 4": {
-            "box_layout": "square",
-            "box_wall_t": "2",
-            "models": "pieces",
-            "piece_height": "3",
-            "piece_layout": "key2",
-            "piece_scale": "3",
-            "render_quality": "fast preview"
-        },
-        "New set 5": {
-            "box_layout": "square",
-            "box_wall_t": "2",
-            "models": "pieces",
-            "piece_height": "6",
-            "piece_layout": "key0",
-            "piece_scale": "3",
-            "render_quality": "fast preview"
-        },
-        "New set 6": {
-            "box_layout": "square",
-            "box_wall_t": "2",
-            "models": "pieces",
-            "piece_height": "3",
-            "piece_layout": "square",
-            "piece_scale": "1",
-            "render_quality": "fast preview"
-        },
-        "New set 7": {
-            "box_layout": "square",
-            "box_wall_t": "2",
-            "models": "pieces",
-            "piece_font": "SF Mono:style=Bold",
-            "piece_height": "9",
-            "piece_layout": "linear",
-            "piece_scale": "3",
-            "render_quality": "fast preview"
-        },
-        "New set 8": {
-            "box_layout": "square",
-            "box_wall_t": "2",
-            "models": "pieces",
-            "piece_font": "SF Mono:style=Bold",
-            "piece_height": "3",
-            "piece_label_type": "Edge Dimensions",
-            "piece_layout": "key0",
-            "piece_scale": "3",
-            "render_quality": "fast preview"
-        },
-        "New set 9": {
-            "box_layout": "square",
-            "box_wall_t": "2",
-            "models": "pieces",
-            "piece_font": "SF Mono:style=Bold",
-            "piece_height": "3",
-            "piece_label_type": "Edge Dimensions",
-            "piece_layout": "key0",
-            "piece_scale": "3",
-            "render_quality": "fast preview"
-        },
-        "New set 10": {
-            "box_layout": "square",
-            "box_wall_t": "2",
-            "models": "pieces",
-            "piece_font": "SF Mono:style=Bold",
-            "piece_height": "3",
-            "piece_label_type": "Edge Dimensions",
-            "piece_layout": "key0",
-            "piece_scale": "3",
-            "render_quality": "fast preview"
-        },
-        "New set 11": {
-            "box_layout": "square",
-            "box_wall_t": "2",
-            "models": "pieces",
-            "piece_font": "SF Mono:style=Bold",
-            "piece_height": "3",
-            "piece_label_type": "Edge Dimensions",
-            "piece_layout": "key0",
-            "piece_scale": "3",
-            "render_quality": "fast preview"
-        },
-        "New set 12": {
-            "box_layout": "square",
-            "box_wall_t": "3",
-            "mark_key_pieces": "yes",
-            "models": "pieces",
-            "piece_font": "SF Mono:style=Bold",
-            "piece_height": "6",
-            "piece_label_type": "Edge Dimensions",
-            "piece_layout": "key0",
-            "piece_scale": "2.8399999999999999",
-            "pieces_exploded": "yes",
-            "render_quality": "fast preview"
-        },
-        "New set 13": {
+            "box_label": "yes",
+            "box_label_text": "Calibron 12",
             "box_layout": "3_keys",
             "box_wall_t": "3",
-            "mark_key_pieces": "yes",
-            "models": "lid",
-            "piece_font": "SF Mono:style=Bold",
+            "models": "Pieces",
+            "piece_font": "ArcadeClassic:style=Regular",
             "piece_height": "6",
             "piece_label_type": "None",
-            "piece_layout": "key0",
-            "piece_scale": "2.8399999999999999",
+            "piece_layout": "Linear",
             "pieces_exploded": "yes",
-            "render_quality": "fast preview"
+            "render_quality": "fast preview",
+            "scale": "2.8399999999999999",
+            "text_scale": "1"
+        },
+        "New set 2": {
+            "box_label": "yes",
+            "box_label_text": "Calibron 12",
+            "box_layout": "3_keys",
+            "box_wall_t": "3",
+            "models": "Pieces",
+            "piece_font": "ArcadeClassic:style=Regular",
+            "piece_height": "6",
+            "piece_label_type": "Piece\/Key Names",
+            "piece_layout": "Printable",
+            "pieces_exploded": "no",
+            "render_quality": "fast preview",
+            "scale": "2.8399999999999999",
+            "text_scale": "1"
         }
     }
 }

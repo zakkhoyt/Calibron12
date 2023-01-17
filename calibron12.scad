@@ -1,11 +1,9 @@
 
 
 // TODO: Extend/retract text
-// TODO: Differentiate the key pieces in a way that is printable
+// TODO: Differentiate the key pieces in a way that is printable. 
 // TODO: Add another layout that is printable and doesn't give away any solutions
-
-// TODO: Pad the box lid more
-// TOOD: Move keys to a different model choiuce
+// TODO: Also all pieces oriented horizontally for easy text.
 
 /* [Render Parameters] */
 // ----------------------------------------------------------------------
@@ -13,56 +11,57 @@
 // Render quality (fast preview does not render threads).
 render_quality = "fast preview"; // ["fast preview", "preview", "final rendering"]
 
-
 /* [Parts] */
-// models = "pieces"; // ["pieces", "keys", "case", "lid"]
-models = "lid"; // ["pieces", "keys", "case", "lid"]
+models = "Pieces"; // ["Pieces", "Key Pieces", "Box (Bottom)", "Box (Top)"]
 
+// how big to scale the pieces by. 2.84 is the size of  of the puzzle. [mm]
+scale = 2.84;
 
 /* [Piece Parameters] */
 // ----------------------------------------------------------------------
 
 // How to layout the pieces
-piece_layout = "key0"; // ["linear", "square", "key0", "key1", "key2"]
+piece_layout = "Printable"; // ["Printable", "Linear", "Square", "Key 0", "Key 1", "Key 2"]
 
 // Render pieces in exploded layout (printable). 
 pieces_exploded = "yes"; // ["yes", "no"]
 
-// Mark the key pieces with an indent on the top
-mark_key_pieces = "yes"; // ["yes", "no"]
 
 // The total height of the vial and cap when assembled. [mm]
 piece_height = 6; 
 
-// how big to scale the pieces by. [mm]
-piece_scale = 2.84;
 
 // Label type for the pieces. 
 piece_label_type = "None"; // ["None", "Piece/Key Names", "Width X Height", "Edge Dimensions"]
 
+// The font to use.
+piece_font = "ArcadeClassic:style=Regular";
+// piece_font = "SF Mono:style=Bold";
+// To list font names: fc-list -f "%-60{{%{family[0]}%{:style[0]=}}}%{file}\n" | sort
 
-// List fonts on your system:
-piece_font = "SF Mono:style=Bold";
-// fc-list -f "%-60{{%{family[0]}%{:style[0]=}}}%{file}\n" | sort
-
+// // Mark the key pieces with an indent on the top
+// mark_key_pieces = "yes"; // ["yes", "no"]
 
 /* [Box Parameters] */
 // ----------------------------------------------------------------------
 
 // The shape of the box. Square has 1 solution, 3_keys has 3 soutions. 
-box_layout = "3_keys"; // ["square", "3_keys"]
+box_layout = "3_keys"; // ["Square", "3_keys"]
 
 // How thick to make the walls for the box. [mm]
 box_wall_t = 3;
 
-
 // Add text to the lid or not.
 box_label = "yes"; // ["yes", "no"]
+
+/* [Text Parameters] */
+// ----------------------------------------------------------------------
 
 // The text to display on the lid
 box_label_text = "Calibron 12";
 
-
+// The scale of text on pieces.
+text_scale = 1.0;
 
 /* [Hidden] */
 // ----------------------------------------------------------------------
@@ -71,9 +70,6 @@ box_label_text = "Calibron 12";
 
 $fn = 30;
 
-// The scale of text on pieces.
-// text_scale = 1.0;
-text_scale = 1.0;
 
 // The margin of text on pieces as a percentage of the the height of the text. 
 text_margin = 0.25;
@@ -84,6 +80,25 @@ text_margin = 0.25;
 // [[width, height], [offset_x, offset_y, rotation], [offset_x, offset_y, rotation]],
 
 
+ps_printable = [
+    [[7,5], [0, 0, 0], [0, 0, 0]],
+    [[10,3], [8, 0, 0], [8, 0, 0]],
+    [[12,10], [19, 0, 0], [19, 0, 0]],
+    [[15,10], [32, 0, 0], [32, 0, 0]],
+    [[15,10], [0, 11, 0], [0, 11, 0]],
+    [[15,13], [16, 11, 0], [16, 11, 0]],
+    [[15,13], [32, 11, 0], [32, 11, 0]],
+    [[20,4], [0, 25, 0], [0, 25, 0]],
+    [[20,5], [21, 25, 0], [21, 25, 0]],
+    [[20,10], [0, 31, 0], [0, 31, 0]],
+    [[23,7], [21, 31, 0], [21, 31, 0]],
+    [[23,8], [21, 39, 0], [0, 42, 0]],
+
+    // // Keys
+    // [[5, 4], [0, 44, 0], [0, 45, 0]],
+    // [[10, 2], [6, 44, 0], [6, 45, 0]],
+    // [[20, 1], [0, 42, 0], [0, 48, 0]],
+];
 
 ps_linear = [
     [[7, 5], [0, 0, 0], [0, 0, 0]],
@@ -213,8 +228,8 @@ box_square_size = [40, 40, 2.33];
 // module render_pieces(layout="solution_square") {
 module render_pieces(ps, exploded) {
     indexes = [2, 4, 12, 13];
-    translate([2 * box_wall_t, 2 * box_wall_t, piece_height / 2]) {
-    // translate([0, 0, piece_height / 2]) {
+    // translate([2 * box_wall_t, 2 * box_wall_t, piece_height / 2]) {
+    translate([0, 0, piece_height / 2]) {
         // Render in the square solution
         for (i = [0: len(ps) - 1]) {
         // for (a = [0: len(indexes) - 1]) {
@@ -230,8 +245,8 @@ module render_pieces(ps, exploded) {
                 position = exploded == true ? p[2] : p[1];
                 rotate(position.z) {
                     translate([
-                        piece_scale * (position.x + rect.x / 2), 
-                        piece_scale * (position.y + rect.y / 2), 
+                        scale * (position.x + rect.x / 2), 
+                        scale * (position.y + rect.y / 2), 
                         0
                     ]) {      
                         difference() {
@@ -239,8 +254,8 @@ module render_pieces(ps, exploded) {
                             // The piece itself
                             cube(
                                 size=[
-                                    piece_scale * rect.x, 
-                                    piece_scale * rect.y, 
+                                    scale * rect.x, 
+                                    scale * rect.y, 
                                     piece_height
                                 ], 
                                 center=true
@@ -278,7 +293,7 @@ module render_pieces(ps, exploded) {
                                             font = piece_font,
                                             halign = "center", 
                                             valign = "center", 
-                                            size = piece_scale * text_scale_clipped
+                                            size = scale * text_scale_clipped
                                         );
                                     }
                                 } else if (piece_label_type == "Edge Dimensions") {
@@ -294,7 +309,7 @@ module render_pieces(ps, exploded) {
                                                 rotate([0, 0, k * (360 / 4)])
                                                 translate([
                                                     0, 
-                                                    piece_scale * ((k % 2 == 0 ? rect.y : rect.x) / 2 - text_scale_clipped), 
+                                                    scale * ((k % 2 == 0 ? rect.y : rect.x) / 2 - text_scale_clipped), 
                                                     p[0] * piece_height / 4
                                                 ]) 
                                                 rotate([p[1], 0, 180])
@@ -304,7 +319,7 @@ module render_pieces(ps, exploded) {
                                                     font = piece_font,
                                                     halign = "center", 
                                                     valign = "center", 
-                                                    size = piece_scale * text_scale_clipped
+                                                    size = scale * text_scale_clipped
                                                 );
 
                                                 
@@ -313,20 +328,21 @@ module render_pieces(ps, exploded) {
                                     }
                                 } 
 
-                                if (mark_key_pieces == "yes") {
-                                    if (i > len(ps) - 4) {
-                                        key_indent_depth = 1;
-                                        translate([0, 0, (piece_height) / 2]) 
-                                        cube(
-                                            [
-                                                piece_scale * rect.x - 2 * key_indent_depth, 
-                                                piece_scale * rect.y - 2 * key_indent_depth, 
-                                                4 * key_indent_depth
-                                            ], 
-                                            center = true
-                                        );
-                                    }
-                                }
+                                // TODO: Use this to indend before outdenting text
+                                // if (mark_key_pieces == "yes") {
+                                //     if (i > len(ps) - 4) {
+                                //         key_indent_depth = 1;
+                                //         translate([0, 0, (piece_height) / 2]) 
+                                //         cube(
+                                //             [
+                                //                 scale * rect.x - 2 * key_indent_depth, 
+                                //                 scale * rect.y - 2 * key_indent_depth, 
+                                //                 4 * key_indent_depth
+                                //             ], 
+                                //             center = true
+                                //         );
+                                //     }
+                                // }
                             }
                         }
                     }
@@ -341,8 +357,8 @@ module render_box(dimensions) {
     
     // Bottom
     bottom_inner = [
-        dimensions.x * piece_scale + 2 * slop,
-        dimensions.y * piece_scale + 2 * slop,
+        dimensions.x * scale + 2 * slop,
+        dimensions.y * scale + 2 * slop,
         dimensions.z * piece_height + slop
     ];
     bottom_outer = [
@@ -351,7 +367,7 @@ module render_box(dimensions) {
         bottom_inner.z + 1 * box_wall_t,
     ];
 
-    if (models == "case") {
+    if (models == "Box (Bottom)") {
         color("#996666", alpha = 0.75) {
             translate([
                 box_wall_t + bottom_outer.x / 2,
@@ -376,7 +392,7 @@ module render_box(dimensions) {
         }
     }
 
-    if (models == "lid") {
+    if (models == "Box (Top)") {
         // Top
         top_inner = [
             bottom_outer.x + 2 * slop,
@@ -431,7 +447,7 @@ module render_box(dimensions) {
                     echo("smaller_dimension: ", smaller_dimension);
 
                     text_margin_d = text_margin;
-                    text_scale_clipped = min(text_scale * piece_scale, (smaller_dimension - 1 * text_margin_d) / 2);
+                    text_scale_clipped = min(text_scale * scale, (smaller_dimension - 1 * text_margin_d) / 2);
                     echo("text_scale_clipped: ", text_scale_clipped);
 
                     union() {
@@ -443,7 +459,7 @@ module render_box(dimensions) {
                             font = piece_font,
                             halign = "center", 
                             valign = "center", 
-                            size = piece_scale * text_scale_clipped
+                            size = scale * text_scale_clipped
                         );
                     }
                 }
@@ -453,40 +469,45 @@ module render_box(dimensions) {
 }
 
 module main() {
-    if (models == "keys") {
+    if (models == "Key Pieces") {
         render_pieces(
             ps = keys,
             exploded = pieces_exploded == "yes"
         );
-    } else if (models == "pieces") {
-        if (piece_layout == "linear") {
+    } else if (models == "Pieces") {
+        if (piece_layout == "Printable") {
+            render_pieces(
+                ps = ps_printable,
+                exploded = pieces_exploded == "yes"
+            );
+        } else if (piece_layout == "Linear") {
             render_pieces(
                 ps = ps_linear,
                 exploded = pieces_exploded == "yes"
             );
-        } else if (piece_layout == "square") {
+        } else if (piece_layout == "Square") {
             render_pieces(
                 ps = ps_square,
                 exploded = pieces_exploded == "yes"
             );
-        } else if (piece_layout == "key0") {
+        } else if (piece_layout == "Key 0") {
             render_pieces(
                 ps = ps_key0,
                 exploded = pieces_exploded == "yes"
             );
-        } else if (piece_layout == "key1") {
+        } else if (piece_layout == "Key 1") {
             render_pieces(
                 ps = ps_key1,
                 exploded = pieces_exploded == "yes"
             );
-        } else if (piece_layout == "key2") {
+        } else if (piece_layout == "Key 2") {
             render_pieces(
                 ps = ps_key2,
                 exploded = pieces_exploded == "yes"
             );
         }
-    } else if (models == "case" || models == "lid") {
-        if (box_layout == "square") {
+    } else if (models == "Box (Bottom)" || models == "Box (Top)") {
+        if (box_layout == "Square") {
             render_box(dimensions=box_square_size);
         } else if (box_layout == "3_keys") {
             render_box(dimensions=box_3keys_size);
