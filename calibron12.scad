@@ -2,8 +2,6 @@
 
 // TODO: Extend/retract text
 // TODO: Differentiate the key pieces in a way that is printable. 
-// TODO: Add another layout that is printable and doesn't give away any solutions
-// TODO: Also all pieces oriented horizontally for easy text.
 
 /* [Render Parameters] */
 // ----------------------------------------------------------------------
@@ -15,7 +13,7 @@ render_quality = "fast preview"; // ["fast preview", "preview", "final rendering
 models = "Pieces"; // ["Pieces", "Key Pieces", "Box (Bottom)", "Box (Top)"]
 
 // how big to scale the pieces by. 2.84 is the size of  of the puzzle. [mm]
-scale = 2.84;
+scale = 2.84; // 3.0
 
 /* [Piece Parameters] */
 // ----------------------------------------------------------------------
@@ -27,13 +25,16 @@ piece_layout = "Printable"; // ["Printable", "Linear", "Square", "Key 0", "Key 1
 pieces_exploded = "yes"; // ["yes", "no"]
 
 // The total height of the vial and cap when assembled. [mm]
-piece_height = 6; 
+piece_height = 6; // 0.1
 
 // Label type for the pieces. 
 piece_label_type = "None"; // ["None", "Piece/Key Names", "Width X Height", "Edge Dimensions"]
 
+// The scale of text on pieces.
+piece_text_scale = 1.0; // 0.1
+
 // The font to use.
-piece_font = "ArcadeClassic:style=Regular";
+piece_font = "ArcadeClassic:style=Regular"; 
 // piece_font = "SF Mono:style=Bold";
 // To list font names: fc-list -f "%-60{{%{family[0]}%{:style[0]=}}}%{file}\n" | sort
 
@@ -47,7 +48,7 @@ piece_font = "ArcadeClassic:style=Regular";
 box_layout = "3_keys"; // ["Square", "3_keys"]
 
 // How thick to make the walls for the box. [mm]
-box_wall_t = 3;
+box_wall_t = 3; // 0.1
 
 // Add text to the lid or not.
 box_label = "yes"; // ["yes", "no"]
@@ -59,7 +60,7 @@ box_label = "yes"; // ["yes", "no"]
 box_label_text = "Calibron 12";
 
 // The scale of text on pieces.
-box_text_scale = 1.1;
+box_text_scale = 1.0; // 0.1
 
 /* [Hidden] */
 // ----------------------------------------------------------------------
@@ -68,8 +69,6 @@ box_text_scale = 1.1;
 
 $fn = 30;
 
-// The scale of text on pieces.
-text_scale = 1.0;
 
 // The margin of text on pieces as a percentage of the the height of the text. 
 text_margin = 0.25;
@@ -269,12 +268,11 @@ module render_pieces(ps, exploded) {
                                     [-1, 180]
                                 ];
 
-                                echo("text_scale: ", text_scale);
+                                echo("piece_text_scale: ", piece_text_scale);
                                 smaller_dimension = min(rect.x, rect.y);
                                 echo("smaller_dimension: ", smaller_dimension);
 
-                                text_margin_d = text_margin;
-                                text_scale_clipped = min(text_scale, (smaller_dimension - 1 * text_margin_d) / 2);
+                                text_scale_clipped = min(piece_text_scale, (smaller_dimension - 1 * text_margin) / 2);
                                 echo("text_scale_clipped: ", text_scale_clipped);
 
                                 if (piece_label_type == "Piece/Key Names" || piece_label_type == "Width X Height") {
@@ -295,7 +293,7 @@ module render_pieces(ps, exploded) {
                                     for (j = [0: len(text_transforms) - 1]) {
                                         // Loop through each of the 4 sides. 
                                         for (k = [0: 3]) {
-                                            if ((3 * text_scale >= rect.y || 3 * text_scale >= rect.x) && k < 2) {
+                                            if ((3 * piece_text_scale >= rect.y || 3 * piece_text_scale >= rect.x) && k < 2) {
                                                 // This avoids printing two dimension numbers on top of each other when they overlap.
                                                 // Instead settle for 2 labels instead of 4
                                             } else {
@@ -441,8 +439,7 @@ module render_box(dimensions) {
                     smaller_dimension = min(top_outer.x, top_outer.y);
                     echo("smaller_dimension: ", smaller_dimension);
 
-                    text_margin_d = text_margin;
-                    text_scale_clipped = min(box_text_scale * scale, (smaller_dimension - 1 * text_margin_d) / 2);
+                    text_scale_clipped = min(box_text_scale * scale, (smaller_dimension - 1 * text_margin) / 2);
                     echo("text_scale_clipped: ", text_scale_clipped);
 
                     union() {
