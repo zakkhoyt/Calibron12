@@ -31,7 +31,7 @@ piece_height = 6; // 0.1
 piece_label_type = "None"; // ["None", "Piece/Key Names", "Width X Height", "Edge Dimensions"]
 
 // The scale of text on pieces.
-piece_text_scale = 1.0; // 0.1
+piece_text_scale = 2.0; // 0.1
 
 // The inset/outset of text on pieces. [mm]
 piece_text_inset = 1; // 0.1
@@ -53,7 +53,7 @@ box_layout = "Rectangle"; // ["Square", "Rectangle"]
 box_wall_t = 3; // 0.1
 
 // Add text to the lid or not.
-box_label = "yes"; // ["yes", "no"]
+box_label = "no"; // ["yes", "no"]
 
 // The text to display on the lid
 box_label_text = "Calibron 12";
@@ -337,16 +337,10 @@ module render_piece_text(
 }
 // module render_pieces(layout="solution_square") {
 module render_pieces(ps, exploded) {
-    indexes = [2, 4, 12, 13];
+    // indexes = [2, 4, 12, 13];
     translate([2 * box_wall_t, 2 * box_wall_t, piece_height / 2]) {
-    // translate([0, 0, piece_height / 2]) {
         // Render in the square solution
         for (i = [0: len(ps) - 1]) {
-        // for (a = [0: len(indexes) - 1]) {
-            // i = indexes[a];
-            // echo(" ------- i: ", i);
-        // for (i = [len(ps) - 3: len(ps) - 1]) {
-        // for (i = [0: 0]) {
             p = ps[i];
             rect = p[0];
             color(piece_properties[i][0]) {
