@@ -56,7 +56,7 @@ box_wall_t = 3; // 0.1
 box_label = "no"; // ["yes", "no"]
 
 // The text to display on the lid
-box_label_text = "Calibron 12";
+box_label_text = "Zalibron 12";
 
 // The scale of text on pieces.
 box_text_scale = 2.0; // 0.1
@@ -351,8 +351,8 @@ module render_pieces(ps, exploded) {
                         scale * (position.y + rect.y / 2), 
                         0
                     ]) {
-                        // union() {
-                        difference() {
+                        union() {
+                        // difference() {
                             // The piece itself
                             cube(
                                 size = [
@@ -363,7 +363,7 @@ module render_pieces(ps, exploded) {
                                 center = true
                             );
 
-                            render_piece_text(
+                            #render_piece_text(
                                 i = i,
                                 rect = rect
                             );
@@ -436,7 +436,8 @@ module render_box(dimensions) {
                     top_outer.y / 2, 
                     top_outer.z / 2 - 0.01
                 ]) {
-                    difference() {
+                    union() {
+                    // difference() {
                         cube(
                             size = top_outer, 
                             center = true
